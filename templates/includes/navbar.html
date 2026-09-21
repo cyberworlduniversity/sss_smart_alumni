@@ -1,0 +1,70 @@
+{% load static %}
+<style>
+    .sa-navbar { height:58px; background:#fff; border-bottom:1px solid #e6e9ef; box-shadow:0 1px 4px rgba(13,40,70,.04); }
+    .sa-navbar .container { height:100%; }
+    .sa-brand { color:#082b55 !important; font-weight:800; font-size:15px; line-height:16px; width:112px; text-decoration:none; }
+    .sa-nav { height:100%; display:flex; align-items:center; gap:3px; }
+    .sa-nav .nav-link { color:#5b6572 !important; font-size:10px; padding:22px 10px 19px !important; border-bottom:2px solid transparent; }
+    .sa-nav .nav-link:hover, .sa-nav .nav-link.active { color:#082b55 !important; border-bottom-color:#082b55; }
+    .sa-actions { display:flex; align-items:center; gap:12px; }
+    .dark-mode-toggle { font-size:11px; border-radius:8px; }
+    .sa-bell { color:#49586a; font-size:15px; text-decoration:none; position:relative; }
+    .sa-badge { position:absolute; top:-5px; right:-8px; min-width:11px; height:11px; border-radius:50%; font-size:7px; line-height:11px; text-align:center; background:#e44b4b; color:#fff; }
+    .sa-avatar { width:23px; height:23px; border-radius:50%; object-fit:cover; background:#dbe3ec; display:flex; align-items:center; justify-content:center; color:#123864; font-size:8px; font-weight:800; overflow:hidden; text-decoration:none; }
+    .sa-avatar img { width:100%; height:100%; object-fit:cover; }
+    .sa-profile-menu { position:relative; }
+    .sa-profile-menu .dropdown-menu { min-width:150px; border:1px solid #e6e9ef; box-shadow:0 8px 24px rgba(13,40,70,.10); }
+    .sa-profile-menu .dropdown-item { font-size:12px; padding:8px 12px; }
+    @media (max-width: 991px) { .sa-navbar{height:auto;padding:6px 0;} .sa-nav{height:auto;flex-wrap:wrap;} .sa-nav .nav-link{padding:8px 10px !important;} .sa-actions{padding:7px 10px;} }
+</style>
+<nav class="navbar navbar-expand-lg sa-navbar">
+    <div class="container">
+        <a class="sa-brand" href="{% url 'home' %}">Smart Alumni<br>Network</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#saNav" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="saNav">
+            {% if user.is_authenticated %}
+            <ul class="navbar-nav sa-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'alumni_list' or request.resolver_match.url_name == 'alumni_detail' %}active{% endif %}" href="{% url 'alumni_list' %}">Alumni</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'jobs:job_list' %}">Jobs</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'mentorship_list' %}">Mentorship</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'post_list' %}">Forum</a></li>
+                {% if user.role == "ADMIN" or user.is_superuser %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Panel</a></li>
+                {% endif %}
+            </ul>
+            <div class="sa-actions">
+                <button type="button" class="dark-mode-toggle btn btn-sm btn-outline-secondary" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <span class="theme-icon" aria-hidden="true">🌙</span>
+                    <span class="theme-text d-none d-xl-inline">Dark Mode</span>
+                </button>
+                <a class="sa-bell" href="{% url 'notification_list' %}" aria-label="Notifications">♧{% if unread_notification_count %}<span class="sa-badge">{{ unread_notification_count }}</span>{% endif %}</a>
+                <div class="dropdown sa-profile-menu">
+                    <a class="sa-avatar" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile menu">
+                        {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="Profile">{% else %}{{ user.first_name|first|default:user.username|first|upper }}{% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="px-3 py-1">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger px-0">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="ms-auto d-flex align-items-center">
+                <button type="button" class="dark-mode-toggle btn btn-sm btn-outline-secondary me-2" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <span class="theme-icon" aria-hidden="true">🌙</span>
+                    <span class="theme-text d-none d-sm-inline">Dark Mode</span>
+                </button>
+                <a class="nav-link d-inline-block" href="{% url 'login' %}">Login</a>
+                <a class="btn btn-primary btn-sm ms-2" href="{% url 'register' %}">Register</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Post{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>{{ post.title }}</h2>
+
+    <p>{{ post.content }}</p>
+
+    <hr>
+
+    <h4>Comments</h4>
+
+    {% for comment in post.comments.all %}
+
+        <div class="border p-2 mb-2">
+
+            <strong>{{ comment.author.username }}</strong>
+
+            <p>{{ comment.content }}</p>
+
+        </div>
+
+    {% empty %}
+
+        <p>No comments.</p>
+
+    {% endfor %}
+
+    <hr>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ comment_form.as_p }}
+
+        <button class="btn btn-primary">
+            Add Comment
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

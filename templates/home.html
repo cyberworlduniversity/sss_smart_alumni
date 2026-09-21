@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+College Smart Alumni Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="p-5 mb-4 bg-primary text-white rounded shadow">
+
+        <h1 class="display-5">
+            Welcome to SSS College
+        </h1>
+
+        <p class="lead">
+            College Smart Alumni and Network Management System
+        </p>
+
+        <hr>
+
+        <p>
+            Connect with alumni, explore jobs, request mentorship and participate in discussions.
+        </p>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>🎓</h3>
+                    <h5>Alumni</h5>
+                    <a href="{% url 'alumni_list' %}" class="btn btn-primary btn-sm">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>💼</h3>
+                    <h5>Jobs</h5>
+                    <a href="{% url 'jobs:job_list' %}" class="btn btn-success btn-sm">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>🤝</h3>
+                    <h5>Mentorship</h5>
+                    <a href="{% url 'mentorship_list' %}" class="btn btn-info btn-sm">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>📝</h3>
+                    <h5>Forum</h5>
+                    <a href="{% url 'post_list' %}" class="btn btn-dark btn-sm">
+                        Visit
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>🔔</h3>
+                    <h5>Notifications</h5>
+                    <a href="{% url 'notification_list' %}" class="btn btn-danger btn-sm">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <div class="card shadow text-center h-100">
+                <div class="card-body">
+                    <h3>👤</h3>
+                    <h5>Profile</h5>
+                    <a href="{% url 'profile' %}" class="btn btn-primary btn-sm">
+                        View
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

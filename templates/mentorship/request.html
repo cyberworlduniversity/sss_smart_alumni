@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Request Mentorship{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h2 class="mb-4">
+                🤝 Request Mentorship
+            </h2>
+
+            <h5>
+                Mentor:
+                {{ alumni.get_full_name|default:alumni.username }}
+            </h5>
+
+            {% if alumni.company %}
+                <p>
+                    <strong>Company:</strong>
+                    {{ alumni.company }}
+                </p>
+            {% endif %}
+
+            {% if alumni.designation %}
+                <p>
+                    <strong>Designation:</strong>
+                    {{ alumni.designation }}
+                </p>
+            {% endif %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Message
+                    </label>
+
+                    <textarea
+                        name="message"
+                        class="form-control"
+                        rows="5"
+                        placeholder="Tell the alumni why you want mentorship..."
+                        required
+                    ></textarea>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    🤝 Send Mentorship Request
+                </button>
+
+                <a
+                    href="{% url 'mentorship_list' %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

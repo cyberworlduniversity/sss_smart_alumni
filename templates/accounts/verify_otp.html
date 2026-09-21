@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Account{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Verify Your Account</h3>
+        </div>
+        <div class="card-body p-4">
+            <p class="mb-4">
+                We sent one OTP to <strong>{{ user.email }}</strong> and another OTP by SMS to your registered phone number.
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="mb-3">
+                    <label class="form-label">Email OTP</label>
+                    {{ form.email_otp }}
+                    {% for error in form.email_otp.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone OTP</label>
+                    {{ form.phone_otp }}
+                    {% for error in form.phone_otp.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Verify Email & Phone</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{% url 'resend_otp' %}" class="btn btn-outline-secondary">Resend OTPs</a>
+            </div>
+
+            <p class="text-muted small mt-3 mb-0">
+                OTPs expire after {{ otp_expiry }} minutes and are limited to 5 attempts.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

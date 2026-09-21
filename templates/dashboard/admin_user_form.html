@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="container mt-4 pb-5" style="max-width:1000px">
+    <div class="d-flex justify-content-between align-items-center mb-4"><h2>{{ title }}</h2><a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Back</a></div>
+    <div class="alert alert-info">Only an authenticated admin can use this form. Admin accounts cannot be created from the public registration page.</div>
+    <div class="card shadow-sm"><div class="card-body"><form method="post" enctype="multipart/form-data">{% csrf_token %}{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}<div class="row g-3">
+    {% for field in form %}<div class="col-md-{% if field.name == 'bio' or field.name == 'skills' %}12{% else %}6{% endif %}"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>{% endfor %}
+    </div><div class="mt-4"><button class="btn btn-primary">Save User</button> <a class="btn btn-outline-secondary" href="{% url 'admin_dashboard' %}">Cancel</a></div></form></div></div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const role = document.getElementById("id_role");
+    const graduation = document.getElementById("id_graduation_year");
+    const currentJob = document.getElementById("id_current_job");
+
+    if (!role || !graduation || !currentJob) return;
+
+    const graduationBox = graduation.closest(".register-field, .col-md-6, .col-md-12") || graduation.parentElement;
+    const currentJobBox = currentJob.closest(".register-field, .col-md-6, .col-md-12") || currentJob.parentElement;
+
+    function toggleAlumniFields() {
+        const isAlumni = role.value === "ALUMNI";
+        graduationBox.style.display = isAlumni ? "" : "none";
+        currentJobBox.style.display = isAlumni ? "" : "none";
+        graduation.required = isAlumni;
+        currentJob.required = isAlumni;
+        if (!isAlumni) {
+            graduation.value = "";
+            currentJob.value = "";
+        }
+    }
+
+    role.addEventListener("change", toggleAlumniFields);
+    toggleAlumniFields();
+});
+</script>
+{% endblock %}

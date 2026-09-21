@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <h3 class="mb-0">
+                        Apply for {{ job.title }}
+                    </h3>
+
+                </div>
+
+                <div class="card-body">
+
+                    <h5>
+                        {{ job.company }}
+                    </h5>
+
+                    {% if job.location %}
+                        <p class="text-muted">
+                            📍 {{ job.location }}
+                        </p>
+                    {% endif %}
+
+                    <hr>
+
+                    <p>
+                        {{ job.description }}
+                    </p>
+
+                    <hr>
+
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+
+                        {% csrf_token %}
+
+                        {{ form.as_p }}
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Submit Application
+                        </button>
+
+                        <a
+                            href="{% url 'jobs:job_list' %}"
+                            class="btn btn-secondary"
+                        >
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h3>My Profile</h3>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 text-center">
+
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}"
+                             class="img-fluid rounded-circle mb-3"
+                             width="180"
+                             height="180">
+                    {% else %}
+                        <img src="https://via.placeholder.com/180"
+                             class="img-fluid rounded-circle mb-3">
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <table class="table">
+
+                        <tr>
+                            <th>Username</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Role</th>
+                            <td>{{ user.role }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Phone</th>
+                            <td>{{ user.phone }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Bio</th>
+                            <td>{{ user.bio }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Skills</th>
+                            <td>{{ user.skills }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>LinkedIn</th>
+                            <td>
+                                {% if user.linkedin %}
+                                    <a href="{{ user.linkedin }}" target="_blank">
+                                        {{ user.linkedin }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>GitHub</th>
+                            <td>
+                                {% if user.github %}
+                                    <a href="{{ user.github }}" target="_blank">
+                                        {{ user.github }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Portfolio</th>
+                            <td>
+                                {% if user.portfolio %}
+                                    <a href="{{ user.portfolio }}" target="_blank">
+                                        {{ user.portfolio }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                            Edit Profile
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

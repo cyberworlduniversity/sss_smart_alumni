@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Alumni Directory{% endblock %}
+
+{% block content %}
+<style>
+    .directory-shell { max-width: 1290px; margin: -2px auto 0; padding: 0 0 48px; color:#092d56; }
+    .directory-shell * { box-sizing:border-box; }
+    .directory-title { font-size:31px; line-height:1.18; font-weight:800; margin:0; letter-spacing:-.7px; color:#082b55; }
+    .directory-subtitle { color:#5d6877; font-size:13px; margin:10px 0 27px; }
+
+    .directory-search { background:#fff; border:1px solid #e9edf3; box-shadow:0 5px 15px rgba(18,44,77,.08); border-radius:8px; padding:6px 6px 6px 11px; display:flex; gap:9px; margin-bottom:27px; height:39px; }
+    .search-input-wrap { flex:1; display:flex; align-items:center; min-width:0; }
+    .search-icon { color:#6e7886; font-size:19px; margin-right:10px; line-height:1; }
+    .directory-search input { border:0; outline:0; width:100%; height:28px; font-size:11px; color:#25364b; background:transparent; }
+    .directory-search input::placeholder { color:#8993a0; }
+    .directory-search button { border:0; border-radius:5px; background:#123864; color:#fff; padding:0 17px; min-width:101px; font-size:9px; font-weight:700; }
+
+    .directory-layout { display:grid; grid-template-columns:165px minmax(0,1fr); gap:14px; align-items:start; }
+    .filter-card { background:#fff; border-radius:8px; box-shadow:0 4px 14px rgba(16,39,71,.08); padding:16px 14px 18px; }
+    .filter-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:17px; }
+    .filter-head h3 { margin:0; font-size:12px; font-weight:800; color:#143b64; }
+    .clear-link { font-size:8px; color:#123864; text-decoration:none; }
+    .filter-section { margin-bottom:18px; }
+    .filter-section h4 { font-size:8px; letter-spacing:.65px; text-transform:uppercase; margin:0 0 9px; font-weight:800; color:#26384d; }
+    .check-row { display:flex; align-items:center; gap:6px; margin:7px 0; font-size:9px; color:#536171; cursor:pointer; }
+    .check-row input { width:11px; height:11px; accent-color:#123864; margin:0; }
+    .year-select { width:100%; height:23px; border:1px solid #cfd6e1; border-radius:4px; color:#526174; font-size:9px; padding:0 7px; background:#fff; outline:none; }
+    .industry-input { width:100%; height:24px; border:1px solid #cfd6e1; border-radius:4px; color:#526174; font-size:9px; padding:0 7px; outline:none; }
+    .industry-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+    .industry-chip { border:0; border-radius:10px; background:#eaf0fb; color:#31527b; padding:4px 7px; font-size:7px; cursor:pointer; }
+
+    .directory-results { min-width:0; }
+    .results-top { display:flex; justify-content:flex-end; margin-bottom:8px; color:#7b8796; font-size:9px; min-height:12px; }
+    .alumni-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .alumni-card { background:#fff; border-radius:8px; padding:13px 12px 12px; box-shadow:0 4px 14px rgba(16,39,71,.08); min-height:156px; display:flex; flex-direction:column; }
+    .alumni-top { display:flex; gap:10px; align-items:center; min-width:0; }
+    .alumni-avatar { width:36px; height:36px; flex:0 0 36px; border-radius:50%; object-fit:cover; background:#e7edf4; display:flex; align-items:center; justify-content:center; color:#123864; font-weight:800; font-size:12px; overflow:hidden; }
+    .alumni-avatar img { width:100%; height:100%; object-fit:cover; }
+    .alumni-name { font-size:12px; font-weight:800; color:#123864; margin:0 0 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .alumni-job { font-size:9px; color:#667384; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:170px; }
+    .alumni-location { font-size:8px; color:#667384; margin-top:2px; }
+    .class-badge { display:inline-block; margin-top:9px; padding:4px 7px; border-radius:10px; background:#f0f4f9; color:#193e69; font-size:8px; width:max-content; }
+    .alumni-dept { font-size:9px; color:#334256; margin:9px 0 8px; min-height:13px; }
+    .card-actions { margin-top:auto; display:flex; gap:7px; }
+    .card-actions a { flex:1; text-align:center; border-radius:5px; height:20px; line-height:20px; text-decoration:none; font-size:8px; }
+    .view-btn { background:#123864; color:#fff; }
+    .message-btn { border:1px solid #123864; color:#123864; background:#fff; }
+    .empty-state { background:#fff; padding:35px; border-radius:8px; text-align:center; color:#687586; box-shadow:0 4px 14px rgba(16,39,71,.08); }
+    .pagination { display:flex; justify-content:center; align-items:center; gap:5px; margin-top:26px; }
+    .page-btn { width:23px; height:23px; border:1px solid #d2d8e2; border-radius:5px; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:9px; color:#30445d; background:#fff; }
+    .page-btn.active { background:#062d57; border-color:#062d57; color:#fff; }
+    .page-dots { color:#7e8997; font-size:10px; padding:0 2px; }
+    @media (max-width: 900px) {
+        .directory-shell { padding:0 12px 35px; }
+        .directory-layout{grid-template-columns:1fr;}
+        .alumni-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+        .filter-card{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+        .filter-head{grid-column:1/-1;margin-bottom:0;}
+    }
+    @media (max-width: 600px) {
+        .directory-shell{padding:0 0 35px;}
+        .directory-title{font-size:25px;}
+        .directory-search{height:auto;min-height:39px;flex-direction:column;padding:7px;}
+        .directory-search button{height:35px;}
+        .alumni-grid{grid-template-columns:1fr;}
+        .filter-card{display:block;}
+    }
+</style>
+
+<div class="directory-shell">
+    <h1 class="directory-title">Meet the People Who Walked Your Path</h1>
+    <p class="directory-subtitle">Connect with graduates from different batches, departments, and career fields.</p>
+
+    <form method="get" class="directory-search">
+        <div class="search-input-wrap">
+            <span class="search-icon">⌕</span>
+            <input type="search" name="search" value="{{ search }}" placeholder="Search by name, department, batch, company or skill..." autocomplete="off">
+        </div>
+        <input type="hidden" name="department" value="{{ selected_department }}">
+        <input type="hidden" name="graduation_year" value="{{ selected_year }}">
+        <input type="hidden" name="industry" value="{{ industry }}">
+        <button type="submit">Search Directory</button>
+    </form>
+
+    <div class="directory-layout">
+        <aside class="filter-card">
+            <div class="filter-head">
+                <h3>Filters</h3>
+                <a class="clear-link" href="{% url 'alumni_list' %}">Clear All</a>
+            </div>
+
+            <form method="get" id="filter-form">
+                <input type="hidden" name="search" value="{{ search }}">
+                <div class="filter-section">
+                    <h4>Department</h4>
+                    {% for dept_value, dept_label in department_options %}
+                        <label class="check-row">
+                            <input type="radio" name="department" value="{{ dept_value }}" {% if selected_department == dept_value %}checked{% endif %} onchange="this.form.submit()">
+                            <span>{{ dept_label }}</span>
+                        </label>
+                    {% empty %}
+                        <span class="check-row">No departments yet</span>
+                    {% endfor %}
+                </div>
+
+                <div class="filter-section">
+                    <h4>Graduation Year</h4>
+                    <select class="year-select" name="graduation_year" onchange="this.form.submit()">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                            <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-section">
+                    <h4>Industry / Job</h4>
+                    <input class="industry-input" type="text" name="industry" value="{{ industry }}" placeholder="e.g. Developer">
+                    <div class="industry-chips">
+                        <button class="industry-chip" type="button" onclick="setIndustry('Technology')">Technology</button>
+                        <button class="industry-chip" type="button" onclick="setIndustry('Finance')">Finance</button>
+                        <button class="industry-chip" type="button" onclick="setIndustry('Healthcare')">Healthcare</button>
+                    </div>
+                    <button type="submit" style="margin-top:8px;width:100%;height:23px;border:0;border-radius:4px;background:#123864;color:#fff;font-size:8px;">Apply</button>
+                </div>
+            </form>
+        </aside>
+
+        <section class="directory-results">
+            <div class="results-top">{{ total_count }} alumni found</div>
+            {% if alumni %}
+            <div class="alumni-grid">
+                {% for person in alumni %}
+                <article class="alumni-card">
+                    <div class="alumni-top">
+                        <div class="alumni-avatar">
+                            {% if person.profile_picture %}
+                                <img src="{{ person.profile_picture.url }}" alt="{{ person.get_full_name|default:person.username }}">
+                            {% else %}
+                                {{ person.first_name|first|default:person.username|first|upper }}
+                            {% endif %}
+                        </div>
+                        <div style="min-width:0;">
+                            <h2 class="alumni-name">{{ person.get_full_name|default:person.username }}</h2>
+                            <p class="alumni-job">{{ person.current_job|default:person.designation|default:"Alumni" }}</p>
+                            {% if person.location %}<p class="alumni-location">⌖ {{ person.location }}</p>{% elif person.city %}<p class="alumni-location">⌖ {{ person.city }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    {% if person.graduation_year %}<span class="class-badge">🎓 Class of {{ person.graduation_year }}</span>{% endif %}
+                    <p class="alumni-dept">{{ person.department|default:"Department not specified" }}</p>
+
+                    <div class="card-actions">
+                        <a class="view-btn" href="{% url 'alumni_detail' person.pk %}">View Profile</a>
+                        {% if request.user.role == 'STUDENT' %}
+                            <a class="message-btn" href="{% url 'request_mentorship' person.pk %}">Message</a>
+                        {% else %}
+                            <a class="message-btn" href="{% url 'mentorship_list' %}">Message</a>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div class="empty-state">
+                    <strong>No alumni found.</strong><br>
+                    {% if search or industry or selected_department or selected_year %}
+                        Try another name, company, skill, job title, department, or graduation year.
+                    {% else %}
+                        Registered alumni will appear here.
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a class="page-btn" href="?search={{ search|urlencode }}&department={{ selected_department|urlencode }}&graduation_year={{ selected_year }}&industry={{ industry|urlencode }}&page={{ page_obj.previous_page_number }}">‹</a>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <span class="page-btn active">{{ num }}</span>
+                    {% elif num <= 3 or num > page_obj.paginator.num_pages|add:'-2' %}
+                        <a class="page-btn" href="?search={{ search|urlencode }}&department={{ selected_department|urlencode }}&graduation_year={{ selected_year }}&industry={{ industry|urlencode }}&page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.paginator.num_pages > 5 and page_obj.number < page_obj.paginator.num_pages|add:'-2' %}<span class="page-dots">...</span>{% endif %}
+                {% if page_obj.has_next %}
+                    <a class="page-btn" href="?search={{ search|urlencode }}&department={{ selected_department|urlencode }}&graduation_year={{ selected_year }}&industry={{ industry|urlencode }}&page={{ page_obj.next_page_number }}">›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+
+<script>
+function setIndustry(value) {
+    const input = document.querySelector('.industry-input');
+    input.value = value;
+    input.form.submit();
+}
+</script>
+{% endblock %}

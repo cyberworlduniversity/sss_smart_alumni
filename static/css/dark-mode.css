@@ -1,0 +1,152 @@
+/* College Smart Alumni - Dark Mode */
+:root {
+    --sa-bg: #f5f5f5;
+    --sa-surface: #ffffff;
+    --sa-text: #212529;
+    --sa-muted: #6c757d;
+    --sa-border: #dee2e6;
+    --sa-input: #ffffff;
+}
+
+html.dark-mode {
+    --sa-bg: #121212;
+    --sa-surface: #1e1e1e;
+    --sa-text: #f1f1f1;
+    --sa-muted: #b8b8b8;
+    --sa-border: #3d3d3d;
+    --sa-input: #2a2a2a;
+    color-scheme: dark;
+}
+
+html.dark-mode body {
+    background: var(--sa-bg) !important;
+    color: var(--sa-text) !important;
+}
+
+html.dark-mode .card,
+html.dark-mode .modal-content,
+html.dark-mode .dropdown-menu,
+html.dark-mode .list-group-item,
+html.dark-mode .offcanvas {
+    background-color: var(--sa-surface) !important;
+    color: var(--sa-text) !important;
+    border-color: var(--sa-border) !important;
+}
+
+html.dark-mode .card-header,
+html.dark-mode .card-footer,
+html.dark-mode .modal-header,
+html.dark-mode .modal-footer {
+    background-color: #252525 !important;
+    color: var(--sa-text) !important;
+    border-color: var(--sa-border) !important;
+}
+
+html.dark-mode .table,
+html.dark-mode .table > :not(caption) > * > * {
+    color: var(--sa-text) !important;
+    background-color: var(--sa-surface) !important;
+    border-color: var(--sa-border) !important;
+}
+
+html.dark-mode .form-control,
+html.dark-mode .form-select,
+html.dark-mode textarea,
+html.dark-mode input,
+html.dark-mode select {
+    background-color: var(--sa-input) !important;
+    color: var(--sa-text) !important;
+    border-color: var(--sa-border) !important;
+}
+
+html.dark-mode .form-control::placeholder,
+html.dark-mode textarea::placeholder {
+    color: #999 !important;
+}
+
+html.dark-mode .text-dark { color: var(--sa-text) !important; }
+html.dark-mode .text-muted { color: var(--sa-muted) !important; }
+html.dark-mode .bg-white { background-color: var(--sa-surface) !important; }
+html.dark-mode .border { border-color: var(--sa-border) !important; }
+html.dark-mode .dropdown-item { color: var(--sa-text) !important; }
+html.dark-mode .dropdown-item:hover { background-color: #333 !important; }
+html.dark-mode a { color: #66b3ff; }
+html.dark-mode .alert { border-color: var(--sa-border); }
+
+.dark-mode-toggle {
+    white-space: nowrap;
+}
+
+body,
+.card,
+.navbar,
+.modal-content,
+.dropdown-menu,
+.form-control,
+.form-select,
+.list-group-item {
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+
+/* ---------- Global component theming ---------- */
+html.dark-mode .sa-navbar {
+    background: #181818 !important;
+    border-bottom-color: #333 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,.35) !important;
+}
+html.dark-mode .sa-brand,
+html.dark-mode .sa-nav .nav-link,
+html.dark-mode .sa-bell {
+    color: var(--sa-text) !important;
+}
+html.dark-mode .sa-nav .nav-link:hover,
+html.dark-mode .sa-nav .nav-link.active {
+    color: #ffffff !important;
+    border-bottom-color: #ffffff !important;
+}
+html.dark-mode .sa-avatar {
+    background: #303030 !important;
+    color: #ffffff !important;
+}
+html.dark-mode .sa-profile-menu .dropdown-menu {
+    background: var(--sa-surface) !important;
+    border-color: var(--sa-border) !important;
+}
+html.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+html.dark-mode .navbar-toggler {
+    border-color: var(--sa-border) !important;
+}
+html.dark-mode .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* Login page (index.html) */
+html.dark-mode .login-page {
+    background: #101010 !important;
+    color: var(--sa-text) !important;
+}
+html.dark-mode .login-form-panel {
+    background: #1e1e1e !important;
+    color: var(--sa-text) !important;
+}
+html.dark-mode .login-form-panel h1,
+html.dark-mode .login-description,
+html.dark-mode .login-field label,
+html.dark-mode .login-register {
+    color: var(--sa-text) !important;
+}
+html.dark-mode .login-input {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+html.dark-mode .login-input::placeholder {
+    color: #aaa !important;
+}
+html.dark-mode .login-forgot,
+html.dark-mode .login-register a {
+    color: #8ec5ff !important;
+}

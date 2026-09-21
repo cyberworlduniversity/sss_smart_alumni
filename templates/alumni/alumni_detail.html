@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Alumni Profile{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <a href="{% url 'alumni_list' %}" class="text-decoration-none">← Back to Alumni Directory</a>
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-body p-4">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        {% if alumni.profile_picture %}<img src="{{ alumni.profile_picture.url }}" width="90" height="90" class="rounded-circle" style="object-fit:cover">{% else %}<div class="rounded-circle d-flex align-items-center justify-content-center bg-light" style="width:90px;height:90px;font-size:28px;font-weight:700">{{ alumni.first_name|first|default:alumni.username|first|upper }}</div>{% endif %}
+        <div><h2 class="mb-1">{{ alumni.get_full_name|default:alumni.username }}</h2><div class="text-muted">{{ alumni.current_job|default:alumni.designation|default:"Alumni" }}</div></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6"><strong>Department</strong><div>{{ alumni.department|default:"Not specified" }}</div></div>
+        <div class="col-md-6"><strong>Graduation Year</strong><div>{{ alumni.graduation_year|default:"Not specified" }}</div></div>
+        <div class="col-md-6"><strong>Current Job</strong><div>{{ alumni.current_job|default:"Not specified" }}</div></div>
+        <div class="col-md-6"><strong>Company</strong><div>{{ alumni.company|default:"Not specified" }}</div></div>
+        <div class="col-12"><strong>Skills</strong><div>{{ alumni.skills|default:"Not specified" }}</div></div>
+        <div class="col-12"><strong>Bio</strong><div>{{ alumni.bio|default:"No bio added yet." }}</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

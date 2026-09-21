@@ -1,0 +1,1 @@
+console.log("College Smart Alumni Loaded");

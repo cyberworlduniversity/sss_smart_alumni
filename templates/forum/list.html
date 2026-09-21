@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Discussion Forum{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Discussion Forum</h2>
+
+        <a href="{% url 'create_post' %}" class="btn btn-primary">
+            New Post
+        </a>
+    </div>
+
+    {% for post in posts %}
+
+        <div class="card mb-3">
+            <div class="card-body">
+
+                <h4>
+                    <a href="{% url 'post_detail' post.pk %}">
+                        {{ post.title }}
+                    </a>
+                </h4>
+
+                <p>{{ post.content|truncatewords:30 }}</p>
+
+                <small>
+                    By {{ post.author.username }}
+                </small>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <p>No posts yet.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Mentorship{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🤝 Mentorship</h2>
+    </div>
+
+
+    {% if user.role == "STUDENT" %}
+
+        <h4 class="mb-3">Available Alumni Mentors</h4>
+
+        {% if alumni %}
+
+            <div class="row">
+
+                {% for mentor in alumni %}
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="card shadow-sm">
+
+                            <div class="card-body">
+
+                                <h5 class="card-title">
+                                    🎓
+                                    {{ mentor.get_full_name|default:mentor.username }}
+                                </h5>
+
+                                <p class="text-muted">
+                                    Alumni
+                                </p>
+
+                                {% if mentor.company %}
+                                    <p>
+                                        <strong>Company:</strong>
+                                        {{ mentor.company }}
+                                    </p>
+                                {% endif %}
+
+                                {% if mentor.designation %}
+                                    <p>
+                                        <strong>Designation:</strong>
+                                        {{ mentor.designation }}
+                                    </p>
+                                {% endif %}
+
+                                {% if mentor.bio %}
+                                    <p>
+                                        {{ mentor.bio|truncatewords:25 }}
+                                    </p>
+                                {% endif %}
+
+                                <a
+                                    href="{% url 'request_mentorship' mentor.id %}"
+                                    class="btn btn-primary"
+                                >
+                                    🤝 Request Mentorship
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-info">
+                No alumni mentors are available.
+            </div>
+
+        {% endif %}
+
+
+        <!-- Student's requests -->
+
+        <hr class="my-5">
+
+        <h4 class="mb-3">My Mentorship Requests</h4>
+
+        {% if my_requests %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Alumni</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Requested On</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for mentorship in my_requests %}
+
+                            <tr>
+
+                                <td>
+                                    {{ mentorship.alumni.get_full_name|default:mentorship.alumni.username }}
+                                </td>
+
+                                <td>
+                                    {{ mentorship.message }}
+                                </td>
+
+                                <td>
+
+                                    {% if mentorship.status == "Pending" %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                    {% elif mentorship.status == "Accepted" %}
+
+                                        <span class="badge bg-success">
+                                            Accepted
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-danger">
+                                            Rejected
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ mentorship.requested_at|date:"d M Y H:i" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-secondary">
+                You haven't requested a mentor yet.
+            </div>
+
+        {% endif %}
+
+
+    {% elif user.role == "ALUMNI" %}
+
+        <h4 class="mb-3">Mentorship Requests</h4>
+
+        {% if mentorships %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for mentorship in mentorships %}
+
+                            <tr>
+
+                                <td>
+                                    {{ mentorship.student.get_full_name|default:mentorship.student.username }}
+                                </td>
+
+                                <td>
+                                    {{ mentorship.message }}
+                                </td>
+
+                                <td>
+
+                                    {% if mentorship.status == "Pending" %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                    {% elif mentorship.status == "Accepted" %}
+
+                                        <span class="badge bg-success">
+                                            Accepted
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-danger">
+                                            Rejected
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+
+                                    {% if mentorship.status == "Pending" %}
+
+                                        <a
+                                            href="{% url 'accept_mentorship' mentorship.id %}"
+                                            class="btn btn-success btn-sm"
+                                        >
+                                            ✓ Accept
+                                        </a>
+
+                                        <a
+                                            href="{% url 'reject_mentorship' mentorship.id %}"
+                                            class="btn btn-danger btn-sm"
+                                        >
+                                            ✕ Reject
+                                        </a>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            No action
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-info">
+                No mentorship requests received yet.
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

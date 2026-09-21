@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account | Smart Alumni Network</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body class="register-page">
+    <main class="register-card">
+        <section class="register-brand-panel">
+            <div class="brand-copy">
+                <h1>Smart Alumni Network</h1>
+                <p>Connecting generations of excellence.</p>
+            </div>
+            <div class="register-campus-frame">
+                <img src="{% static 'images/register-campus.jpg' %}" alt="SSS College campus">
+            </div>
+        </section>
+
+        <section class="register-form-panel">
+            <div class="register-heading">
+                <h2>Create Your<br>Account</h2>
+                <p>Join your college's growing alumni and student network. Create your profile and start building valuable connections.</p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="register-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" class="register-form">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    {% for field in form %}
+                        <div class="register-field {% if field.name == 'bio' or field.name == 'skills' or field.name == 'profile_picture' %}full-width{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                            {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="create-account-button">Create Account</button>
+            </form>
+
+            <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login to your account</a></p>
+        </section>
+    </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const role = document.getElementById("id_role");
+    const graduation = document.getElementById("id_graduation_year");
+    const currentJob = document.getElementById("id_current_job");
+
+    if (!role || !graduation || !currentJob) return;
+
+    const graduationBox = graduation.closest(".register-field, .col-md-6, .col-md-12") || graduation.parentElement;
+    const currentJobBox = currentJob.closest(".register-field, .col-md-6, .col-md-12") || currentJob.parentElement;
+
+    function toggleAlumniFields() {
+        const isAlumni = role.value === "ALUMNI";
+        graduationBox.style.display = isAlumni ? "" : "none";
+        currentJobBox.style.display = isAlumni ? "" : "none";
+        graduation.required = isAlumni;
+        currentJob.required = isAlumni;
+        if (!isAlumni) {
+            graduation.value = "";
+            currentJob.value = "";
+        }
+    }
+
+    role.addEventListener("change", toggleAlumniFields);
+    toggleAlumniFields();
+});
+</script>
+
+</body>
+</html>

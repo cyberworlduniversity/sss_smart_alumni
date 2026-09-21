@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Job Applications</h2>
+
+        <a href="{% url 'jobs:job_list' %}"
+           class="btn btn-primary">
+            Back to Jobs
+        </a>
+
+    </div>
+
+
+    {% if applications %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Job</th>
+                        <th>Company</th>
+                        <th>Student</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for application in applications %}
+
+                    <tr>
+
+                        <td>
+                            {{ application.job.title }}
+                        </td>
+
+                        <td>
+                            {{ application.job.company }}
+                        </td>
+
+                        <td>
+                            {{ application.student.get_full_name|default:application.student.username }}
+                        </td>
+
+                        <td>
+                            {{ application.applied_at|date:"d M Y, h:i A" }}
+                        </td>
+
+                        <td>
+
+                            {% if application.status == "SHORTLISTED" %}
+
+                                <span class="badge bg-success">
+                                    Accepted
+                                </span>
+
+                            {% elif application.status == "REJECTED" %}
+
+                                <span class="badge bg-danger">
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Applied
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <!-- VIEW -->
+                            <a href="{% url 'jobs:view_application' application.pk %}"
+                               class="btn btn-info btn-sm">
+                                View
+                            </a>
+
+
+                            <!-- ACCEPT -->
+                            {% if user.is_staff or user.role == "ADMIN" or application.job.posted_by == user %}
+
+                                {% if application.status != "SHORTLISTED" %}
+
+                                    <form method="post" action="{% url 'jobs:accept_application' application.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                    </form>
+
+                                {% endif %}
+
+
+                                <!-- REJECT -->
+
+                                {% if application.status != "REJECTED" %}
+
+                                    <form method="post" action="{% url 'jobs:reject_application' application.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-warning btn-sm">Reject</button>
+                                    </form>
+
+                                {% endif %}
+
+
+                                <!-- DELETE -->
+
+                                <form method="post" action="{% url 'jobs:delete_application' application.pk %}" class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this application?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No job applications found.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

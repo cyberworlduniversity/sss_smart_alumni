@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Available Jobs</h2>
+
+        {% if user.is_authenticated and user.role == "ALUMNI" %}
+            <a href="{% url 'jobs:create_job' %}" class="btn btn-success">
+                + Post Job
+            </a>
+        {% endif %}
+
+    </div>
+
+    {% if jobs %}
+
+        <div class="row">
+
+            {% for job in jobs %}
+
+            <div class="col-md-6 mb-4">
+
+                <div class="card shadow h-100">
+
+                    <div class="card-body">
+
+                        <h4>{{ job.title }}</h4>
+
+                        <p>
+                            <strong>Company:</strong>
+                            {{ job.company }}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            {{ job.location }}
+                        </p>
+
+                        <p>{{ job.description }}</p>
+
+                        <hr>
+
+                        <small class="text-muted">
+                            Posted by:
+                            {{ job.posted_by.first_name|default:job.posted_by.username }}
+                        </small>
+
+                    </div>
+
+                    <div class="card-footer bg-white">
+
+                        {% if user.is_authenticated %}
+
+                            {% if user.role == "STUDENT" %}
+
+                                <a href="{% url 'jobs:apply_job' job.id %}" class="btn btn-primary">
+                                    Apply Now
+                                </a>
+
+                            {% endif %}
+
+                          {% if user.role == "ALUMNI" and job.posted_by == user %}
+
+<a href="{% url 'jobs:application_list' %}" class="btn btn-success">
+    View Applications
+</a>
+
+<form method="post" action="{% url 'jobs:delete_job' job.id %}" class="d-inline"
+      onsubmit="return confirm('Are you sure you want to delete this job vacancy?');">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">🗑 Delete Job</button>
+</form>
+
+{% endif %}
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No jobs available.
+
+            {% if user.role == "ALUMNI" %}
+                <br><br>
+
+                <a href="{% url 'jobs:create_job' %}" class="btn btn-success">
+                    Post First Job
+                </a>
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+</div>
+
+{% endblock %}
